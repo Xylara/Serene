@@ -11,18 +11,23 @@ document.addEventListener('DOMContentLoaded', () => {
         chatElement.scrollTop = chatElement.scrollHeight;
     }
 
-    const socket = new WebSocket(`ws://localhost:${window.location.port}`);
+    function fetchMessages() {
+        fetch('/api/messages')
+            .then(response => response.json())
+            .then(data => {
+                chatElement.innerHTML = '';
+                data.forEach(msg => displayMessage(msg.user, msg.text, msg.timestamp));
+            })
+            .catch(error => console.error('Error fetching messages:', error));
+    }
 
-    socket.onmessage = event => {
-        const msg = JSON.parse(event.data);
-        displayMessage(msg.user, msg.text, msg.timestamp);
-    };
+    setInterval(fetchMessages, 2000);
 
     sendButton.addEventListener('click', () => {
         const user = usernameElement.value.trim();
         const text = messageElement.value.trim();
         if (user && text) {
-            fetch('/send-message', {
+            fetch('/api/messages', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -32,8 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => response.json())
             .then(msg => {
                 messageElement.value = '';
+                fetchMessages();
             })
             .catch(error => console.error('Error sending message:', error));
         }
     });
+
+    fetchMessages();
 });
