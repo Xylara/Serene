@@ -1,25 +1,9 @@
 {
-  "name": "serene",
-  "version": "1.0.0",
-  "description": "A way to chat with your freinds online",
-  "main": "index.js",
-  "scripts": {
-    "start": "node ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Xylara/Serene.git"
-  },
-  "author": "playstation451",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/Xylara/Serene/issues"
-  },
-  "homepage": "https://github.com/Xylara/Serene#readme",
   "dependencies": {
+    "bcryptjs": "^3.0.2",
     "ejs": "^3.1.10",
-    "express": "^4.21.1",
-    "fs": "0.0.1-security",
-    "pnpm": "^10.8.0"
+    "express": "^5.1.0",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7"
   }
 }

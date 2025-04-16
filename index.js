@@ -1,25 +1,60 @@
 const express = require('express');
-const path = require('path');
-const apiRoutes = require('./routes/api');
-const staticMiddleware = require('./middleware/static');
-
 const app = express();
-const port = 3002;
+const path = require('path');
+const fs = require('fs');
+const ejs = require('ejs');
+const bcrypt = require('bcryptjs'); // You'll need to install this package
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
-staticMiddleware(app);
-
-app.get('/', (req, res) => {
-    res.render('index');
+app.get('/register', (req, res) => {
+    res.render('register', { error: null });
 });
 
+app.get('/', (req, res) => {
+    res.render('index', { error: null });
+});
 
-app.use('/api', apiRoutes);
+app.post('/register', async (req, res) => {
+    const { username, password, confirm_password } = req.body;
+    const usersFilePath = path.join(__dirname, 'users.json');
+    
+    let users = [];
+    if (fs.existsSync(usersFilePath)) {
+        const fileData = fs.readFileSync(usersFilePath, 'utf-8');
+        users = JSON.parse(fileData);
+    }
 
-app.listen(port, () => {
-    console.log(`Serene is running on http://localhost:${port}`);
+    const existingUser = users.find(user => user.username === username);
+    if (existingUser) {
+        res.render('register', { error: 'Username already exists' });
+        return;
+    }
+
+    if (password !== confirm_password) {
+        res.render('register', { error: 'Passwords do not match' });
+        return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const newUser = {
+        id: users.length,
+        username,
+        password: hashedPassword,
+        created_at: new Date().toISOString()
+    };
+
+    users.push(newUser);
+    fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+
+    res.redirect('/');
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
