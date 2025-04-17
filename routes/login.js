@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
-const bcrypt = require('bcryptjs');
 const path = require('path');
-
-const usersData = fs.readFileSync(path.join(__dirname, '../users.json'));
-const users = JSON.parse(usersData);
+const bcrypt = require('bcryptjs');
 
 router.post('/', (req, res) => {
     const { username, password } = req.body;
+    
+    const usersData = fs.readFileSync(path.join(__dirname, '../users.json'));
+    const users = JSON.parse(usersData);
 
     const user = users.find(user => user.username === username);
     
@@ -23,7 +23,7 @@ router.post('/', (req, res) => {
             res.render('index', { error: 'An error occurred' });
         }
         if (match) {
-            res.send('Login successful!');
+            res.redirect('/home');
         } else {
             res.render('index', { error: 'Invalid password' });
         }
