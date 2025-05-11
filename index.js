@@ -8,6 +8,14 @@ const register = require('./routes/register');
 const login = require('./routes/login');
 const logout = require('./routes/logout');
 
+const isLoggedIn = (req, res, next) => {
+    if (req.session.userId) {
+        next();
+    } else {
+        res.redirect('/');
+    }
+};
+
 app.use(session({
     secret: 'your-secret-key',
     resave: false,
@@ -24,7 +32,7 @@ app.get('/', (req, res) => {
     res.render('index', { error: null });
 });
 
-app.get('/home', (req, res) => {
+app.get('/home', isLoggedIn, (req, res) => {
     res.render('home');
 });
 

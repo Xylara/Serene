@@ -23,6 +23,8 @@ router.post('/', (req, res) => {
             res.render('index', { error: 'An error occurred' });
         }
         if (match) {
+            req.session.userId = user.id;
+            req.session.cookie.maxAge = 600000;
             res.redirect('/home');
         } else {
             res.render('index', { error: 'Invalid password' });
