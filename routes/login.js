@@ -25,7 +25,9 @@ router.post('/', (req, res) => {
         if (match) {
             req.session.userId = user.id;
             req.session.cookie.maxAge = 600000;
+            req.session.save();
             res.redirect('/home');
+            return;
         } else {
             res.render('index', { error: 'Invalid password' });
         }

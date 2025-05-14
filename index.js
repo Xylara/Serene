@@ -20,7 +20,11 @@ app.use(session({
     secret: 'your-secret-key',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }
+    cookie: { 
+        secure: false,
+        maxAge: 600000,
+        httpOnly: true
+    }
 }));
 
 app.use(express.json());
