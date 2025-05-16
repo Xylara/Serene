@@ -9,6 +9,7 @@ router.get('/', (req, res) => {
     res.render('register', { error: null });
 });
 
+
 router.post('/', async (req, res) => {
     const { username, password, confirm_password } = req.body;
     const usersFilePath = path.join(__dirname, '..', 'users.json');
@@ -21,7 +22,9 @@ router.post('/', async (req, res) => {
 
     const existingUser = users.find(user => user.username === username);
     if (existingUser) {
-        res.render('register', { error: 'Username already exists' });
+        res.render('register', { 
+            error: 'Username already taken. Please choose a different username.' 
+        });
         return;
     }
 
