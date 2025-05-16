@@ -1,5 +1,7 @@
+require('dotenv').config();
+
 const secretConfig = {
-    secretKey: 'your-secret-key',
+    secretKey: process.env.SECRET_KEY,
     tokenExpiresIn: '10m',
     tokenMaxAge: 600000
 };
