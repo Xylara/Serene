@@ -7,6 +7,8 @@ const jwt = require('jsonwebtoken');
 const { secretKey } = require('./config/secret');
 require('dotenv').config();
 
+const svg = require('./middleware/svg');
+
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -16,8 +18,6 @@ app.set('views', path.join(__dirname, 'views'));
 const register = require('./routes/register');
 const login = require('./routes/login');
 const logout = require('./routes/logout');
-
-const svg = require('./middleware/svg');
 
 const isLoggedIn = (req, res, next) => {
     const token = req.cookies['auth-token'];
