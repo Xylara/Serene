@@ -2,35 +2,30 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const ejs = require('ejs');
-const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const jwt = require('jsonwebtoken');
+const { secretKey, tokenMaxAge } = require('./config/secret');
+
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 const register = require('./routes/register');
 const login = require('./routes/login');
 const logout = require('./routes/logout');
 
 const isLoggedIn = (req, res, next) => {
-    if (req.session.userId) {
+    const token = req.cookies['auth-token'];
+    if (!token) return res.redirect('/');
+    
+    jwt.verify(token, secretKey, (err, decoded) => {
+        if (err) return res.redirect('/');
+        req.userId = decoded.userId;
         next();
-    } else {
-        res.redirect('/');
-    }
+    });
 };
-
-app.use(session({
-    secret: 'your-secret-key',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { 
-        secure: false,
-        maxAge: 600000,
-        httpOnly: true
-    }
-}));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
 
 app.get('/', (req, res) => {
     res.render('index', { error: null });
@@ -43,6 +38,11 @@ app.get('/home', isLoggedIn, (req, res) => {
 app.use('/login', login);
 app.use('/register', register);
 app.use('/logout', logout);
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render('index', { error: 'Something went wrong!' });
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
