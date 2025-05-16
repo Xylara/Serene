@@ -4,7 +4,7 @@ const path = require('path');
 const ejs = require('ejs');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
-const { secretKey, tokenMaxAge } = require('./config/secret');
+const { secretKey } = require('./config/secret');
 
 app.use(cookieParser());
 app.use(express.json());
