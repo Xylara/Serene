@@ -1,7 +1,7 @@
 {
   "name": "@xylara/serene",
   "version": "1.0.0",
-  "description": "A unified service layer for Groq and Gemini AI APIs with optional server utilities.",
+  "description": "a",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
