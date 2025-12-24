@@ -40,7 +40,7 @@ export class GroqService {
 
   public async createChatCompletion(
     messages: Array<{ role: 'user' | 'assistant' | 'system'; content: string }>,
-    model: string = 'mixtral-8x7b-32768',
+    model: string = 'meta-llama/llama-4-maverick-17b-128e-instruct',
   ) {
     return this.groq.chat.completions.create({
       messages: messages as any,
